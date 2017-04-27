@@ -6,6 +6,7 @@ function onReady(){
   console.log('jQuery test');
   getKoalas();
   $('#addKoala').on('click', addKoala);
+  $('#removeKoala').on('click', removeKoala);
 }
 
 function getKoalas(){
@@ -15,6 +16,7 @@ function getKoalas(){
       type: 'GET',
       success: function(response){
         console.log('back from server with:', response);
+        $('#house').empty();
         for (var i = 0; i < response.length; i++) {
           $('#house').append('<p>'+ response[i].name + ', ' + response[i].sex + ', ' + response[i].age + ', ' + response[i].ready_for_transfer + ', ' + response[i].notes + '</p>');
         }  //end for loop
@@ -38,8 +40,23 @@ function addKoala (){
     data: objectToSend,
     success: function(response){
       console.log('back from server with ', response);
-      $('#house').empty();
       getKoalas();
+    }
+  });
+}
+
+function removeKoala (){
+  console.log('you removed a koala!');
+  var objectToSend = {
+    name: $('#name').val(),
+  };
+  console.log('sending:', objectToSend);
+  $.ajax({
+    url: '/removeKoala',
+    type: 'POST',
+    data: objectToSend,
+    success: function(response){
+      console.log('back from server with ', response);
     }
   });
 }

@@ -13,13 +13,15 @@ var config = {
   database: 'koalaholla',
   host: 'localhost',
   port: 5432,
-  max: 20
+  max: 20,
+  timeOutMilliSec: 15000
 }; // end config
 
 //create new pool
 var pool = new pg.Pool( config );
 
 //globals
+//test array used in testing connection between client and server
 var koalaArray=[
   {
     Name: 'stan',
@@ -92,6 +94,30 @@ app.post ('/addKoala', function (req, res){
       console.log('connected to db');
       //query write this koala to db (req.body)
       connection.query( "INSERT INTO koalaholla (name, sex, age, ready_for_transfer, notes) VALUES($1,$2,$3,$4,$5 )", [req.body.name, req.body.sex, req.body.age, req.body.ready, req.body.notes]);
+      // close connection to reopen spot in pool
+      done();
+      // res.send
+      res.sendStatus(200);
+    } // end else
+  }); //end pool
+}); //end addKoala post
+
+app.post ('/removeKoala', function (req, res){
+  console.log('hit removeKoala');
+  var removedKoala = req.body;
+  console.log('received from client:', req.body);
+  // connect to db
+  pool.connect( function( err, connection, done ){
+    //check if there was an Error
+    if( err ){
+      console.log( err );
+      // respond with PROBLEM!
+      res.send( 400 );
+    }// end Error
+    else{
+      console.log('connected to db');
+      //query delete this koala from db (req.body)
+      connection.query( "DELETE from koalaholla where name='$1'"[req.body.name]);
       // close connection to reopen spot in pool
       done();
       // res.send
