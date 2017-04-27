@@ -9,14 +9,20 @@
   </head>
   <body>
     <h1>Koala Holla</h1>
-    <img src="https://raw.githubusercontent.com/devjanaprime/koalaHolla/master/public/images/icon.png">
+    <img src="images/icon.png">
     <div id="input">
-        <input type="text" id="name" placeholder="name"><br>
-        <input type="text" id="sex" placeholder="sex (m or f)"><br>
-        <input type="number" id="age" placeholder="age"><br>
-        <input type="text" id="ready" placeholder="ready for transfer (true or false)"><br>
+        <input type="text" id="name" placeholder="name">
+        <select id="sex">
+            <option>F</option>
+            <option>M</option>
+        </select>
+        <input type="number" id="age" placeholder="age">
+        <select id="ready">
+            <option>false</option>
+            <option>true</option>
+        </select>
         <input type="text" id="notes" placeholder="notes"><br>
-        <button type="button" id="addKoala">Add A Koala</button>
+        <button type="button" id="addKoala">Add Koala to KoalaHolla</button>
     </div>
     <div id="house">
 

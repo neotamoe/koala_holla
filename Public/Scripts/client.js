@@ -24,4 +24,22 @@ function getKoalas(){
 
 function addKoala (){
   console.log('you added a koala!');
+  var objectToSend = {
+    name: $('#name').val(),
+    sex: $('#sex').val(),
+    ready: $('#ready').val(),
+    age: $('#age').val(),
+    notes: $('#notes').val()
+  };
+  console.log('sending:', objectToSend);
+  $.ajax({
+    url: '/addKoala',
+    type: 'POST',
+    data: objectToSend,
+    success: function(response){
+      console.log('back from server with ', response);
+      $('#house').empty();
+      getKoalas();
+    }
+  });
 }

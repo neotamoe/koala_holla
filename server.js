@@ -10,7 +10,7 @@ app.use (bodyParser.urlencoded( {extended: true }));
 
 //set up config for pool
 var config = {
-  database: 'koalaHut',
+  database: 'koalaholla',
   host: 'localhost',
   port: 5432,
   max: 20
@@ -36,7 +36,6 @@ app.listen(3050, function(){
 });
 
 //ROUTES
-
 //base URL
 app.get ('/', function(req, res){
   console.log('base URL hit');
@@ -46,33 +45,57 @@ app.get ('/', function(req, res){
 //getKoalas route
 app.get ('/getKoalas', function (req, res){
   console.log('hit get koalas');
-
-    // array of koalas
-   var allKoalas = [];
-   // connect to db
-   pool.connect( function( err, connection, done ){
-     //check if there was an Error
-     if( err ){
-       console.log( err );
-       // respond with PROBLEM!
-       res.send( 400 );
-     }// end Error
-     else{
-       console.log('connected to db');
-       // send query for all koalas in the 'koalaHut' table and hold in a variable (resultSet)
-       var resultSet = connection.query( "SELECT * from koalaholla" );
-       // convert each row into an object in the allKoalas array
-       // on each row, push the row into allKoalas
-       resultSet.on( 'row', function( row ){
-         allKoalas.push( row );
-       }); //end on row
-       // on end of rows send array as response
-       resultSet.on( 'end', function(){
-         // close connection to reopen spot in pool
-         done();
-         // res.send array of cars
-         res.send( allKoalas );
-       }); //end on end
-     } // end no error
-   }); //end pool
+  // array of koalas
+  var allKoalas = [];
+  // connect to db
+  pool.connect( function( err, connection, done ){
+    //check if there was an Error
+    if( err ){
+      console.log( err );
+      // respond with PROBLEM!
+      res.send( 400 );
+    }// end Error
+    else{
+      console.log('connected to db');
+      // send query for all koalas in the 'koalaHut' table and hold in a variable (resultSet)
+      var resultSet = connection.query( "SELECT * from koalaholla" );
+      // convert each row into an object in the allKoalas array
+      // on each row, push the row into allKoalas
+      resultSet.on( 'row', function( row ){
+        allKoalas.push( row );
+      }); //end on row
+      // on end of rows send array as response
+      resultSet.on( 'end', function(){
+        // close connection to reopen spot in pool
+        done();
+        // res.send array of cars
+        res.send( allKoalas );
+      }); //end on end
+    } // end no error
+  }); //end pool
 }); //end koalas get
+
+//addKoala route
+app.post ('/addKoala', function (req, res){
+  console.log('hit addKoala');
+  var newKoala = req.body;
+  console.log('received from client:', req.body);
+  // connect to db
+  pool.connect( function( err, connection, done ){
+    //check if there was an Error
+    if( err ){
+      console.log( err );
+      // respond with PROBLEM!
+      res.send( 400 );
+    }// end Error
+    else{
+      console.log('connected to db');
+      //query write this koala to db (req.body)
+      connection.query( "INSERT INTO koalaholla (name, sex, age, ready_for_transfer, notes) VALUES($1,$2,$3,$4,$5 )", [req.body.name, req.body.sex, req.body.age, req.body.ready, req.body.notes]);
+      // close connection to reopen spot in pool
+      done();
+      // res.send
+      res.sendStatus(200);
+    } // end else
+  }); //end pool
+}); //end addKoala post
