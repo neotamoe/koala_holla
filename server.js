@@ -102,10 +102,10 @@ app.post ('/addKoala', function (req, res){
   }); //end pool
 }); //end addKoala post
 
-app.post ('/removeKoala', function (req, res){
+app.delete ('/removeKoala', function (req, res){
   console.log('hit removeKoala');
   var removedKoala = req.body;
-  console.log('received from client:', req.body);
+  console.log('hit removeKoala and received from client:', req.body);
   // connect to db
   pool.connect( function( err, connection, done ){
     //check if there was an Error
@@ -117,7 +117,8 @@ app.post ('/removeKoala', function (req, res){
     else{
       console.log('connected to db');
       //query delete this koala from db (req.body)
-      connection.query( "DELETE from koalaholla where name='$1'"[req.body.name]);
+      var name = req.body.name;
+      connection.query( "DELETE from koalaholla where name="+req.body.koalaid);
       // close connection to reopen spot in pool
       done();
       // res.send

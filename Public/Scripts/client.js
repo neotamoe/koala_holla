@@ -6,7 +6,7 @@ function onReady(){
   console.log('jQuery test');
   getKoalas();
   $('#addKoala').on('click', addKoala);
-  $('#removeKoala').on('click', removeKoala);
+  $(document).on('click', '.removeKoala', removeKoala);
 }
 
 function getKoalas(){
@@ -18,7 +18,7 @@ function getKoalas(){
         console.log('back from server with:', response);
         $('#house').empty();
         for (var i = 0; i < response.length; i++) {
-          $('#house').append('<p>'+ response[i].name + ', ' + response[i].sex + ', ' + response[i].age + ', ' + response[i].ready_for_transfer + ', ' + response[i].notes + '</p>');
+          $('#house').append('<p>'+ response[i].name + ', ' + response[i].sex + ', ' + response[i].age + ', ' + response[i].ready_for_transfer + ', ' + response[i].notes + '<button class="removeKoala" data-koalaid='+response[i].id +'>Remove</button></p>');
         }  //end for loop
       }  // end success
     });  //end ajax
@@ -46,17 +46,18 @@ function addKoala (){
 }
 
 function removeKoala (){
-  console.log('you removed a koala!');
+  var myId= $(this).data('koalaid');
+  console.log('remove koala button clicked' + ' for id:', myId);
   var objectToSend = {
-    name: $('#name').val(),
+    koalaId: myId
   };
-  console.log('sending:', objectToSend);
   $.ajax({
-    url: '/removeKoala',
-    type: 'POST',
+    url:'/removeKoala',
+    type: 'DELETE',
     data: objectToSend,
     success: function(response){
-      console.log('back from server with ', response);
-    }
-  });
-}
+      console.log('back from server with: ', response);
+      getKoalas();
+    } //end success
+  });  //end ajax
+}  //end removeKoala
